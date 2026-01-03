@@ -1,0 +1,163 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in, footskip=28pt]{geometry}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{cmbright} % clean geometric sans
+\usepackage{xcolor}
+\usepackage{tikz} % Essential for the layout
+\usetikzlibrary{calc}
+
+\definecolor{primary}{RGB}{0, 50, 100}   % Navy Blue
+\definecolor{accent}{RGB}{0, 150, 136}   % Teal/Cyan
+\renewcommand{\familydefault}{\sfdefault} % Clean sans-serif body
+\newcommand{\coverTitleFont}{\fontfamily{ppl}\bfseries\selectfont}
+\newcommand{\coverSubtitleFont}{\fontfamily{ppl}\mdseries\selectfont}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  urlcolor=blue!70!black,
+  citecolor=blue!70!black
+}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\color{primary}\textbf{MedFollow}}
+\chead{\color{accent}GenomeX}
+\rhead{\color{primary}BioFusion}
+\lfoot{\color{black!70}MedFollow \textbar{} GenomeX \textbar{} BioFusion Hackathon}
+\cfoot{\color{black!60}\thepage}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{16pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \lhead{\color{primary}\textbf{MedFollow}}%
+  \chead{\color{accent}GenomeX}%
+  \rhead{\color{primary}BioFusion}%
+  \lfoot{\color{black!70}MedFollow \textbar{} GenomeX \textbar{} BioFusion Hackathon}%
+  \cfoot{\color{black!60}\thepage}%
+  \renewcommand{\footrulewidth}{0.4pt}%
+}
+\setstretch{1.1}
+
+\begin{document}
+
+\begin{titlepage}
+    \sffamily % Clean sans-serif font for the cover
+    \newgeometry{left=0cm, right=0cm, top=0cm, bottom=0cm} % Full page usage
+
+    \begin{tikzpicture}[remember picture, overlay]
+        % 1. LEFT SIDEBAR (Fills 35% of the page)
+        \fill[primary] (current page.north west) rectangle ([xshift=7cm]current page.south west);
+        
+        % 2. TEAM INFO (Inside Sidebar)
+        \node[anchor=north west, align=left, text width=6cm] at ([xshift=0.8cm, yshift=-3cm]current page.north west) {
+            \color{white}
+            \small \MakeUppercase{\textbf{Submitted By}}\\[10pt]
+            {\huge \textbf{Team\\[5pt] GenomeX}}\\[30pt]
+            
+            \large \textbf{Members:}\\[8pt]
+            Sahas Eashan\\[6pt]
+            Nuwan Dhananjaya\\[6pt]
+            Sanugi Wickramasinghe\\[40pt]
+            
+            \rule{5cm}{0.5pt}\\[20pt]
+            
+            \small \MakeUppercase{\textbf{Event}}\\[10pt]
+            \large BioFusion Hackathon\\[5pt]
+            Submission
+        };
+
+        % 3. MAIN TITLE (Right Side)
+        \node[anchor=west, align=left, text width=12cm] at ([xshift=8.5cm, yshift=3cm]current page.west) {
+            {\color{accent} {\fontsize{42}{44}\selectfont \coverTitleFont MedFollow}}\\[15pt]
+            {\color{black!80} {\fontsize{20}{24}\selectfont \coverSubtitleFont Agentic Decision-Support for\\[5pt] Medication Follow-Up}}
+        };
+        
+        % 4. BOTTOM FOOTER (Date & File Info)
+        \node[anchor=south east, align=right] at ([xshift=-1.5cm, yshift=1.5cm]current page.south east) {
+            \color{gray}
+            \small
+            \today\\[5pt]
+            \textbf{Deliverables:}\\
+            Notebook: GenomeX\_Notebook.ipynb\\
+            Report: GenomeX\_Report.pdf
+        };
+    \end{tikzpicture}
+
+    \restoregeometry % Returns to normal margins for the rest of the PDF
+\end{titlepage}
+\pagestyle{fancy}
+
+\section*{1. Problem}
+Sri Lanka faces a sharp affordability and availability gap for medicines. Patients routinely buy only 2--3 days of a 7--14 day course or halt treatment early when they "feel okay." That wastes scarce money, leaves unused doses that others could have consumed, and forces costly repeat doctor visits just to check progress. When symptoms improve only partially, people are unsure whether to continue, switch, or seek urgent care; the result is delayed recovery, avoidable complications, and financial strain on already tight household budgets. The guidance gap is widest for those juggling work, travel, and the cost of re-channeling a clinician every few days.
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Affordability + supply:} High prices and shortages push patients to partial-course purchasing, creating incomplete treatments and inconsistent adherence.
+  \item \textbf{Access burden:} Re-channeling a doctor every few days is expensive, time-consuming, and often infeasible outside major cities.
+  \item \textbf{Outcome risk:} Stopping an effective drug too early or continuing an ineffective one delays recovery and can trigger complications.
+  \item \textbf{Waste:} Partially used packs mean money lost and doses others could have used; disposal also raises safety and environmental concerns.
+  \item \textbf{Uncertainty:} Patients cannot easily tell if "somewhat better" means continue, switch, or see a doctor immediately.
+\end{itemize}
+
+\section*{2. Solution}
+MedFollow is an agentic, transparent follow-up assistant designed for this reality. It reads patient-reported baseline and current symptoms, combines them with evidence from drug-review data, and returns a conservative recommendation: continue medication, schedule follow-up, or seek urgent care. The goal is to cut unnecessary clinic visits while protecting safety and explaining why a decision was made. Each decision is paired with rationale, thresholds, and similar-case evidence so patients and clinicians can see the basis for the recommendation.
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Inputs:} Baseline symptoms, current symptoms, medication, condition, adherence, and red-flag terms (e.g., chest pain, swelling).
+  \item \textbf{Decision path:} Symptom change signals + similarity search + class-weighted model + stability and safety checks, tuned to avoid harmful misses on the \texttt{not\_effective} class.
+  \item \textbf{Outputs:} A clear action (continue / follow-up / urgent), calibrated class probabilities, similar cases, and integrity flags that highlight any uncertainty.
+  \item \textbf{Safety posture:} Conservative defaults; if uncertainty, instability, OOD, or red flags appear, route to follow-up or urgent care rather than over-confident guidance.
+  \item \textbf{Access benefit:} Reduces the need for immediate re-channeling when symptoms are clearly improving, saving cost and time while still surfacing red flags quickly.
+\end{itemize}
+
+\newpage
+\thispagestyle{fancy}
+
+\section*{3. Data}
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Source:} Drug Reviews (Druglib.com), UCI ML Repository (CC BY 4.0).
+  \item \textbf{Access:} Public URL \texttt{"https://archive.ics.uci.edu/static/public/461/data.csv"}.
+  \item \textbf{Fields:} reviewID, urlDrugName, rating, effectiveness (target), sideEffects, condition, benefitsReview, sideEffectsReview, commentsReview.
+  \item \textbf{Repo:} \href{https://github.com/sahas-eashan/bio-FUSION}{https://github.com/sahas-eashan/bio-FUSION}
+\end{itemize}
+
+
+
+\section*{4. Method}
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Model:} Word + char TF--IDF features feeding class-weighted logistic regression; thresholds tuned (e.g., $t\_\text{not}=0.25$, $t\_\text{eff}=0.55$) to protect the \texttt{not\_effective} class. Class weights are critical in a medical setting: we strongly penalize predicting “effective” when the true label is “not\_effective,” because that mistake could keep patients on a failing therapy.
+  \item \textbf{Parsing:} Gemini (\texttt{models/gemini-flash-latest}) used only to structure user text (baseline/current symptoms, med, condition, adherence, severe flags); classification remains local.
+  \item \textbf{Explainability:} Class probabilities, similar-case retrieval (TF--IDF cosine), and safety prompts shown with each decision.
+  \item \textbf{Reproducibility:} Seeds set; train/val/test split stratified on labels; environment captured in notebook.
+\end{itemize}
+
+\section*{5. Agentic Safety Stack}
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Consistency checks:} Ask overlapping questions (start date, first dose date, total doses) and down-weight confidence if answers conflict.
+  \item \textbf{Plausibility / range:} Flag impossible vitals or logical conflicts (e.g., temp $>$ 45C, ``fully recovered'' + pain 9/10, ``0 doses'' + ``side effects after taking it'').
+  \item \textbf{Symptom progression logic:} Improved $+$ new severe symptoms $\Rightarrow$ urgent review; worsening on-meds $\Rightarrow$ follow-up/clarify.
+  \item \textbf{Stability / robustness:} Check if small text changes flip the decision; if unstable, route to follow-up.
+  \item \textbf{Anomaly / OOD:} If input is far from training distribution, lower confidence and recommend follow-up.
+  \item \textbf{Red flags:} Chest pain, dyspnea, rash with swelling, bleeding, fainting, high fever $\Rightarrow$ seek urgent care.
+\end{itemize}
+
+\section*{6. Results}
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Metrics:} Confusion matrices (Figures 1, 2) show baseline recall for \texttt{not\_effective} around 0.43, improved to $\approx$0.88 after class-weight tuning and thresholding; trade-offs appear as lower \texttt{effective}/\texttt{mixed} accuracy, but safety risk is reduced for missed failures. Fill in accuracy/F1/ROC-AUC and calibration from the notebook run.
+  \item \textbf{Thresholds:} Notebook uses $t\_\text{not}=0.25$ and $t\_\text{eff}=0.55$ to protect against false “effective” on truly not\_effective cases.
+  \item \textbf{Error analysis:} Residual confusions are mainly \texttt{effective} vs \texttt{mixed}; add calibration and richer symptom-change features to improve without hurting \texttt{not\_effective}.
+\end{itemize}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\linewidth]{../output.png}
+  \caption{Normalized confusion matrix after class-weight tuning; note improved recall for \texttt{not\_effective}.}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\linewidth]{../output1.png}
+  \caption{Alternate thresholding view; balances gains in \texttt{not\_effective} while keeping \texttt{effective} and \texttt{mixed} reasonable.}
+\end{figure}
+
+\end{document}
