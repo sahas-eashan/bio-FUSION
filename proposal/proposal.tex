@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-\usepackage[margin=1in, footskip=28pt]{geometry}
+\usepackage[margin=2cm]{geometry}
 \usepackage{setspace}
 \usepackage{enumitem}
 \usepackage{hyperref}
@@ -7,6 +7,7 @@
 \usepackage{cmbright} % clean geometric sans
 \usepackage{xcolor}
 \usepackage{tikz} % Essential for the layout
+\setlength{\footskip}{28pt}
 \usetikzlibrary{calc}
 
 \definecolor{primary}{RGB}{0, 50, 100}   % Navy Blue
@@ -42,7 +43,8 @@
 \setstretch{1.1}
 
 \begin{document}
-
+\newpage
+\clearpage
 \begin{titlepage}
     \sffamily % Clean sans-serif font for the cover
     \newgeometry{left=0cm, right=0cm, top=0cm, bottom=0cm} % Full page usage
@@ -88,60 +90,218 @@
 
     \restoregeometry % Returns to normal margins for the rest of the PDF
 \end{titlepage}
-\pagestyle{fancy}
+\newpage
+\clearpage
+\tableofcontents
 
-\section*{1. Problem}
+\newpage
+\section*{1. Identified Problem}
+\addcontentsline{toc}{section}{1. Identified Problem}
 Sri Lanka faces a sharp affordability and availability gap for medicines. Patients routinely buy only 2--3 days of a 7--14 day course or halt treatment early when they "feel okay." That wastes scarce money, leaves unused doses that others could have consumed, and forces costly repeat doctor visits just to check progress. When symptoms improve only partially, people are unsure whether to continue, switch, or seek urgent care; the result is delayed recovery, avoidable complications, and financial strain on already tight household budgets. The guidance gap is widest for those juggling work, travel, and the cost of re-channeling a clinician every few days.
 \begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Affordability + supply:} High prices and shortages push patients to partial-course purchasing, creating incomplete treatments and inconsistent adherence.
-  \item \textbf{Access burden:} Re-channeling a doctor every few days is expensive, time-consuming, and often infeasible outside major cities.
-  \item \textbf{Outcome risk:} Stopping an effective drug too early or continuing an ineffective one delays recovery and can trigger complications.
-  \item \textbf{Waste:} Partially used packs mean money lost and doses others could have used; disposal also raises safety and environmental concerns.
-  \item \textbf{Uncertainty:} Patients cannot easily tell if "somewhat better" means continue, switch, or see a doctor immediately.
+  \item \textbf{Medicines are hard to afford or find:} High prices and shortages force patients to buy only part of a prescribed course.
+  
+  \item \textbf{Patients stop when they feel “a bit better”:} Without guidance, partial symptom improvement is mistaken for full recovery.
+  
+  \item \textbf{Doctor follow-ups are difficult:} Re-visiting a clinician just to check progress is costly, time-consuming, and often impractical.
+  
+  \item \textbf{Wrong decisions delay recovery:} Stopping effective treatment too early or continuing ineffective medicine can cause complications.
+  
+  \item \textbf{Money and medicine are wasted:} Unused or half-used medicines waste limited household income and reduce availability for others.
 \end{itemize}
 
-\section*{2. Solution}
-MedFollow is an agentic, transparent follow-up assistant designed for this reality. It reads patient-reported baseline and current symptoms, combines them with evidence from drug-review data, and returns a conservative recommendation: continue medication, schedule follow-up, or seek urgent care. The goal is to cut unnecessary clinic visits while protecting safety and explaining why a decision was made. Each decision is paired with rationale, thresholds, and similar-case evidence so patients and clinicians can see the basis for the recommendation.
+\section*{2. Our Solution}
+\addcontentsline{toc}{section}{2. Our Solution}
+MedFollow is an agentic, transparent follow-up assistant designed for this reality. It reads patient-reported baseline and current symptoms, combines them with evidence from drug-review data, and returns a conservative recommendation: continue medication, schedule follow-up, or seek urgent care. The goal is to reduce unnecessary clinic visits while ensuring safety and explaining the reasoning behind any decision made. Each decision is accompanied by a rationale, thresholds, and similar-case evidence, allowing patients and clinicians to see the basis for the recommendation.
+
 \begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Inputs:} Baseline symptoms, current symptoms, medication, condition, adherence, and red-flag terms (e.g., chest pain, swelling).
-  \item \textbf{Decision path:} Symptom change signals + similarity search + class-weighted model + stability and safety checks, tuned to avoid harmful misses on the \texttt{not\_effective} class.
-  \item \textbf{Outputs:} A clear action (continue / follow-up / urgent), calibrated class probabilities, similar cases, and integrity flags that highlight any uncertainty.
-  \item \textbf{Safety posture:} Conservative defaults; if uncertainty, instability, OOD, or red flags appear, route to follow-up or urgent care rather than over-confident guidance.
-  \item \textbf{Access benefit:} Reduces the need for immediate re-channeling when symptoms are clearly improving, saving cost and time while still surfacing red flags quickly.
+  \item \textbf{Decision-focused inputs:} Uses both baseline and current symptoms, medication details, adherence, and red-flag terms to reason about treatment progress, not just current symptom presence.
+  
+  \item \textbf{Safety-aware decision path:} Combines symptom-change signals, similarity-based evidence, and a class-weighted model explicitly tuned to avoid unsafe “effective” predictions when treatment is failing.
+  
+  \item \textbf{Actionable, transparent outputs:} Provides a clear next step (continue / follow-up / urgent) with calibrated probabilities, similar past cases, and integrity flags that surface uncertainty instead of hiding it.
+
+  \item \textbf{Conservative by design:} Defaults to follow-up or urgent care when uncertainty, instability, out-of-distribution inputs, or red flags are detected, prioritizing patient safety over over-confident guidance.
+  
+  \item \textbf{Practical access benefit:} Reduces unnecessary clinic visits when recovery is clear, while ensuring early escalation when improvement is incomplete or misleading.
 \end{itemize}
 
 \newpage
-\thispagestyle{fancy}
+\clearpage
+\section*{3. Dataset}
+\addcontentsline{toc}{section}{3. Dataset}
+\subsection*{3.1 Dataset Source and Citation}
+\addcontentsline{toc}{subsection}{3.1 Dataset Source and Citation}
+The dataset used in this study is the Drug Review Dataset originally collected from \href{DrugLib.com}{DrugLib.com} and made publicly available through the \textbf{UCI Machine Learning Repository} under the CC BY 4.0 license.\\
+\\
+\textbf{Citation:} UCI Machine Learning Repository: Drug Review Dataset (2018). \\
+Available at: \href{https://archive.ics.uci.edu/ml/datasets/Drug+Review+Dataset}{https://archive.ics.uci.edu/ml/datasets/Drug+Review+Dataset}
 
-\section*{3. Data}
+\subsection*{3.2 Data Access and Repository}
+\addcontentsline{toc}{subsection}{3.2 Data Access and Repository}
+The dataset is accessed via the public UCI URL: \href{https://archive.ics.uci.edu/static/public/461/data.csv}{https://archive.ics.uci.edu/static/public/461/data.csv}\\
+\\
+All preprocessing and experiments are reproducible and available in the project repository: \\
+\href{https://github.com/sahas-eashan/bio-FUSION}{https://github.com/sahas-eashan/bio-FUSION}
+
+\subsection*{3.3 Variables and Target Label}
+\addcontentsline{toc}{subsection}{3.3 Variables and Target Label}
+
+Each record corresponds to a patient-reported drug review. The key variables used are:
+
 \begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Source:} Drug Reviews (Druglib.com), UCI ML Repository (CC BY 4.0).
-  \item \textbf{Access:} Public URL \texttt{"https://archive.ics.uci.edu/static/public/461/data.csv"}.
-  \item \textbf{Fields:} reviewID, urlDrugName, rating, effectiveness (target), sideEffects, condition, benefitsReview, sideEffectsReview, commentsReview.
-  \item \textbf{Repo:} \href{https://github.com/sahas-eashan/bio-FUSION}{https://github.com/sahas-eashan/bio-FUSION}
+  \item \textbf{reviewID:} Unique identifier for each review
+  \item \textbf{urlDrugName:} Name of the medication
+  \item \textbf{condition:} Medical condition for which the drug was taken
+  \item \textbf{rating:} Numeric satisfaction score provided by the user
+  \item \textbf{benefitsReview:} Free-text description of perceived benefits
+  \item \textbf{sideEffectsReview:} Free-text description of experienced side effects
+  \item \textbf{commentsReview:} Additional patient comments
+  \item \textbf{effectiveness:} Categorical label indicating perceived treatment effectiveness (target variable)
 \end{itemize}
+
+The \texttt{effectiveness} field is used as the prediction target, representing whether the user perceived the medication as effective or not.
+
+\subsection*{3.4 Data Distribution and Basic Analysis}
+\addcontentsline{toc}{subsection}{3.4 Data Distribution and Basic Analysis}
+The dataset contains a large number of patient reviews spanning multiple medications and conditions. As is common in real-world medical feedback data, the class distribution is imbalanced, with a higher proportion of reviews labeled as \texttt{effective} compared to \texttt{not\_effective}. This imbalance motivates the use of class-weighted learning and conservative decision thresholds to reduce unsafe false-positive predictions.\\
+\\
+Text lengths and vocabulary vary significantly across reviews, reflecting informal language, spelling variation, and heterogeneous symptom descriptions.
+
+\subsection*{3.5 Preprocessing}
+\addcontentsline{toc}{subsection}{3.5 Preprocessing}
+The following preprocessing steps are applied before model training:
+
+\begin{itemize}[leftmargin=1.5em]
+  \item Removal of missing or duplicate entries
+  \item Lowercasing and basic text normalization
+  \item Concatenation of relevant text fields to form a unified input representation
+  \item TF--IDF feature extraction at both word and character levels
+  \item Stratified train/validation/test split to preserve class proportions
+\end{itemize}
+
+No label augmentation or synthetic data generation is performed. All preprocessing steps are explicitly documented and implemented within the project notebook to ensure reproducibility.
 
 
 
 \section*{4. Method}
+\addcontentsline{toc}{section}{4. Method}
+\subsection*{4.1 Model Initialization and Pretraining Disclosure}
+\addcontentsline{toc}{subsection}{4.1 Model Initialization and Pretraining Disclosure}
 \begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Model:} Word + char TF--IDF features feeding class-weighted logistic regression; thresholds tuned (e.g., $t\_\text{not}=0.25$, $t\_\text{eff}=0.55$) to protect the \texttt{not\_effective} class. Class weights are critical in a medical setting: we strongly penalize predicting “effective” when the true label is “not\_effective,” because that mistake could keep patients on a failing therapy.
-  \item \textbf{Parsing:} Gemini (\texttt{models/gemini-flash-latest}) used only to structure user text (baseline/current symptoms, med, condition, adherence, severe flags); classification remains local.
-  \item \textbf{Explainability:} Class probabilities, similar-case retrieval (TF--IDF cosine), and safety prompts shown with each decision.
-  \item \textbf{Reproducibility:} Seeds set; train/val/test split stratified on labels; environment captured in notebook.
+    \item \textbf{Model Type:} This work uses a classical machine learning text classification pipeline based on TF--IDF feature extraction followed by class-weighted logistic regression. No deep neural networks are used for classification.
+    \item \textbf{Pretrained Models:} No pretrained classification models or pretrained language models are used for prediction. All classification parameters are learned from scratch on the task-specific dataset.
+    \item \textbf{External Models (Non-predictive Use):} The Gemini large language model (models/gemini-flash-latest) is used only for structured information extraction from free-text user inputs (e.g., separating baseline symptoms, current symptoms, medication name, adherence, and severe warning flags). Gemini outputs are not used for classification, scoring, or decision-making.
+    \item \textbf{Weight Initialization:} The logistic regression classifier is randomly initialized and trained from scratch using the study dataset.
 \end{itemize}
+
+\subsection*{4.2 Model Architecture and Design Rationale}
+\addcontentsline{toc}{subsection}{4.2 Model Architecture and Design Rationale}
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Feature Representation:} Input text is transformed using a combination of:
+    \begin{itemize}[leftmargin=1.5em]
+        \item Word-level TF--IDF features (unigrams and bigrams)
+        \item Character-level TF--IDF features (character n-grams)
+    \end{itemize}
+    This hybrid representation improves robustness to spelling variations, informal language, and short clinical descriptions, which are common in patient-reported text.
+    
+    \item \textbf{Classifier:} A multinomial logistic regression model is used as the final classifier. Logistic regression was chosen due to:
+    \begin{itemize}[leftmargin=1.5em]
+        \item Interpretability and transparency
+        \item Well-calibrated probabilistic outputs
+        \item Stability on small-to-moderate medical datasets
+        \item Ease of applying class-weighting for safety-critical objectives
+    \end{itemize}
+\end{itemize}
+
+\subsection*{4.3 Training Procedure and Hyperparameters}
+\addcontentsline{toc}{subsection}{4.3 Training Procedure and Hyperparameters}
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Training Strategy:} The model is trained using supervised learning on labeled symptom–treatment outcome pairs. Training is performed locally without automated high-level training abstractions.
+    
+    \item \textbf{Key Hyperparameters:}
+    \begin{itemize}[leftmargin=1.5em]
+        \item TF--IDF maximum features: limited to control overfitting
+        \item N-gram range (word): unigrams and bigrams
+        \item N-gram range (character): task-tuned character spans
+        \item Classifier: Logistic Regression
+        \item Optimizer: LIBLINEAR solver
+        \item Regularization: L2 penalty
+        \item Class weights: inversely proportional to class frequency, with additional emphasis on the \texttt{not\_effective} class
+    \end{itemize}
+    
+    \item \textbf{Class Weighting for Medical Safety:} In a medical context, false positives for the effective class are more dangerous than false negatives. Predicting that a treatment is effective when it is not may delay appropriate clinical intervention. Therefore, the loss function is explicitly weighted to penalize misclassification of the not\_effective class more heavily.
+
+\end{itemize}
+
+\subsection*{4.4 Decision Thresholding and Risk Control}
+\addcontentsline{toc}{subsection}{4.4 Decision Thresholding and Risk Control}
+Instead of relying on default probability thresholds, class-specific decision thresholds are tuned using the validation set:
+\begin{itemize}[leftmargin=1.5em]
+    \item \texttt{not\_effective}: lower threshold ($t=0.25$) to increase sensitivity
+    \item \texttt{effective}: higher threshold ($t=0.55$) to reduce unsafe false positives
+\end{itemize}
+
+This asymmetric thresholding reflects clinical risk priorities and aligns with conservative decision-making principles in healthcare AI.
+
+\subsection*{4.5 Explainability and Decision Transparency}
+\addcontentsline{toc}{subsection}{4.5 Explainability and Decision Transparency}
+Each prediction is accompanied by:
+\begin{itemize}[leftmargin=1.5em]
+    \item Class probability scores from the logistic regression model
+    \item Retrieval of similar historical cases using TF-IDF cosine similarity
+    \item Safety prompts highlighting uncertainty, severe symptom flags, or insufficient evidence
+\end{itemize}
+
+This ensures clinicians or users can inspect \emph{why} a decision was made rather than receiving a single opaque label.
+
+\subsection*{4.6 Data Splitting and Validation Strategy}
+\addcontentsline{toc}{subsection}{4.6 Data Splitting and Validation Strategy}
+\begin{itemize}
+    \item \textbf{Dataset Splitting}  
+    The dataset is divided into training, validation, and test sets using stratified sampling to preserve class distribution across splits.
+    \item \textbf{Validation Purpose}  
+    \begin{itemize}[leftmargin=1.5em]
+        \item Hyperparameter tuning
+        \item Threshold selection
+        \item Monitoring class-wise performance, especially recall for \texttt{not\_effective}
+    \end{itemize}
+\end{itemize}
+
+The test set is held out and used only for final performance reporting.
+
+\subsection*{4.7 Reproducibility}
+\addcontentsline{toc}{subsection}{4.7 Reproducibility}
+To ensure reproducibility:
+\begin{itemize}[leftmargin=1.5em]
+    \item Random seeds are fixed for all stochastic components
+    \item Data splits are deterministic
+    \item Software environment and package versions are documented within the notebook
+\end{itemize}
+
 
 \section*{5. Agentic Safety Stack}
+\addcontentsline{toc}{section}{5. Agentic Safety Stack}
+
+MedFollow incorporates a layered safety stack that continuously audits input quality, model stability, and clinical risk before issuing any recommendation. The system is designed to reduce overconfident guidance and to escalate care whenever uncertainty or potential harm is detected.
+
 \begin{itemize}[leftmargin=1.5em]
-  \item \textbf{Consistency checks:} Ask overlapping questions (start date, first dose date, total doses) and down-weight confidence if answers conflict.
-  \item \textbf{Plausibility / range:} Flag impossible vitals or logical conflicts (e.g., temp $>$ 45C, ``fully recovered'' + pain 9/10, ``0 doses'' + ``side effects after taking it'').
-  \item \textbf{Symptom progression logic:} Improved $+$ new severe symptoms $\Rightarrow$ urgent review; worsening on-meds $\Rightarrow$ follow-up/clarify.
-  \item \textbf{Stability / robustness:} Check if small text changes flip the decision; if unstable, route to follow-up.
-  \item \textbf{Anomaly / OOD:} If input is far from training distribution, lower confidence and recommend follow-up.
-  \item \textbf{Red flags:} Chest pain, dyspnea, rash with swelling, bleeding, fainting, high fever $\Rightarrow$ seek urgent care.
+  \item \textbf{Input consistency validation:} Cross-field logical consistency is evaluated across medication start timing, dosing history, and symptom timelines. Conflicting or incomplete responses reduce model confidence and trigger conservative routing.
+  
+  \item \textbf{Plausibility and range enforcement:} Physiological values, symptom severity scores, and treatment claims are checked against medically plausible ranges and logical coherence. Violations result in confidence reduction and escalation.
+  
+  \item \textbf{Symptom progression rules:} The system evaluates directional symptom change over time. Improvement combined with emergent high-risk symptoms or worsening while on treatment is automatically routed to follow-up or urgent care.
+  
+  \item \textbf{Prediction stability assessment:} Robustness is tested by applying minimal perturbations to the input text and monitoring decision consistency. Unstable predictions are flagged and downgraded.
+  
+  \item \textbf{Out-of-distribution detection:} Feature-space distance from the training distribution is monitored. Inputs identified as out-of-distribution result in lowered confidence and non-committal recommendations.
+  
+  \item \textbf{High-risk symptom escalation:} Presence of predefined high-risk clinical indicators triggers immediate escalation to urgent medical review, bypassing routine decision logic.
 \end{itemize}
 
+
 \section*{6. Results}
+\addcontentsline{toc}{section}{6. Results}
 \begin{itemize}[leftmargin=1.5em]
   \item \textbf{Metrics:} Confusion matrices (Figures 1, 2) show baseline recall for \texttt{not\_effective} around 0.43, improved to $\approx$0.88 after class-weight tuning and thresholding; trade-offs appear as lower \texttt{effective}/\texttt{mixed} accuracy, but safety risk is reduced for missed failures. Fill in accuracy/F1/ROC-AUC and calibration from the notebook run.
   \item \textbf{Thresholds:} Notebook uses $t\_\text{not}=0.25$ and $t\_\text{eff}=0.55$ to protect against false “effective” on truly not\_effective cases.
@@ -149,14 +309,15 @@ MedFollow is an agentic, transparent follow-up assistant designed for this reali
 \end{itemize}
 
 \begin{figure}[h]
-  \centering
-  \includegraphics[width=0.75\linewidth]{../output.png}
-  \caption{Normalized confusion matrix after class-weight tuning; note improved recall for \texttt{not\_effective}.}
+    \centering
+    \includegraphics[width=0.75\linewidth]{output.png}
+    \caption{Normalized confusion matrix after class-weight tuning; note improved recall for \texttt{not\_effective}}
+    \label{fig:placeholder}
 \end{figure}
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.75\linewidth]{../output1.png}
+  \includegraphics[width=0.75\linewidth]{output2.png}
   \caption{Alternate thresholding view; balances gains in \texttt{not\_effective} while keeping \texttt{effective} and \texttt{mixed} reasonable.}
 \end{figure}
 
